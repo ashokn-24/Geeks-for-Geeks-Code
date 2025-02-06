@@ -35,42 +35,34 @@ class GFG {
 
 
 class Solution {
-    public boolean bfs(int src,ArrayList<ArrayList<Integer>> adj , int[] vis){
-        Queue<int[]> q = new LinkedList<>();
+    public boolean dfs(int src,int par,ArrayList<ArrayList<Integer>> adj,int[] vis){
         vis[src] = 1;
-        q.offer(new int[]{src,-1});
         
-        while(!q.isEmpty()){
-            int[] top = q.poll();
-            int node = top[0];
-            int parent = top[1];
-            
-            for(Integer it: adj.get(node)){
-                if(vis[it] == 0){
-                    vis[it] = 1;
-                    q.offer(new int[]{it,node});
-                }else if(it != parent ){
+        for(Integer it: adj.get(src)){
+            if(vis[it]==0){
+               if(dfs(it,src,adj,vis) == true){
+                   return true;
+               }
+            }else if(it != par){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public boolean isCycle(ArrayList<ArrayList<Integer>> adj) {
+        
+        int v = adj.size();
+        int[] vis = new int[v];
+        
+        for(int i = 0 ;i < v;i++){
+            if(vis[i] == 0){
+                if(dfs(i,-1,adj,vis)== true){
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    public boolean isCycle(ArrayList<ArrayList<Integer>> adj) {
-        int v = adj.size();
-        int[] vis = new int[v];
-        
-        for(int i = 0; i < v; i++){
-            if(vis[i] == 0){
-                 if(bfs(i,adj,vis)){
-                     return true;
-                 }
-            }
-        }
-        
-        return false;
-               
-        
     }
 }
