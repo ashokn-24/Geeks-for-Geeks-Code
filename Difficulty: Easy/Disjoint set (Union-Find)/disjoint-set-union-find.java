@@ -43,7 +43,7 @@ class GfG {
     }
 
     void unionSet(int par[], int x, int z) {
-        int[] rank = new int[par.length];
+        int[] size = new int[par.length];
         int up_x = find(par, x);
         int up_y = find(par, z);
         
@@ -51,14 +51,12 @@ class GfG {
             return;
         }
         
-        if(rank[up_x] > rank[up_y]){
+        if(size[up_x] > size[up_y]){
             par[up_y] = up_x;
-        }else if(rank[up_y] > rank[up_x]){
-            par[up_x] = up_y;
+            size[up_y] += size[up_x];
         }else{
             par[up_x] = up_y;
-            rank[up_x]++;
+             size[up_x] += size[up_y];
         }
-        
     }
 }
