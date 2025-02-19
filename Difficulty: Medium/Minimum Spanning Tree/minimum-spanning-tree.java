@@ -37,50 +37,99 @@ public class Main {
 
 
 // User function Template for Java
-
 class Solution {
     
-    static class Data implements Comparable<Data> { // Fix: Make Data class static
-        int wt, node, parent;
-
-        Data(int wt, int node) {
-            this.wt = wt;
-            this.node = node;
+    static class Data implements Comparable<Data> {
+        int weight;
+        int u;
+        int v;
+    
+        public Data(int weight, int u, int v) {
+            this.weight = weight;
+            this.u = u;
+            this.v = v;
         }
-
+    
+        // Implement compareTo to sort by weight in ascending order
+        @Override
         public int compareTo(Data other) {
-            return this.wt - other.wt; // Min-Heap based on weight
+            return Integer.compare(this.weight, other.weight);
+        }
+    }
+
+    
+    static class DisjointSet{
+        int[] size;
+        int[] parent;
+        
+        public DisjointSet(int n){
+            size = new int[n];
+            parent = new int[n];
+            
+            for(int i = 0; i< n;i++){
+                size[i] = 1;
+                parent[i] = i;
+            }
+        } 
+        
+        public int find(int x){
+            if(x == parent[x]){
+                return x;
+            }
+            
+            return parent[x] = find(parent[x]);
+        }
+        
+        public void union(int x, int y){
+            int parX = find(x);
+            int parY = find(y);
+            
+            if(parX == parY){
+                return;
+            }
+            
+            if(size[parX] >= size[parY]){
+                parent[parY] = parX;
+                size[parX] += size[parY];
+            }else{
+                parent[parX] = parY;
+                size[parY] += size[parX];
+            }
         }
     }
     
     static int spanningTree(int V, int E, List<List<int[]>> adj) {
-        PriorityQueue<Data> pq = new PriorityQueue<>((x, y) -> x.wt - y.wt);
-        int[] vis = new int[V];
-        Arrays.fill(vis,0);
-        int sum = 0;
-        pq.add(new Data(0, 0));
+        List<Data> edges = new ArrayList<>();
         
-        while(!pq.isEmpty()){
-            Data temp = pq.poll();
-            int wt = temp.wt;
-            int node = temp.node;
-            
-            if(vis[node] == 1) continue;
-            
-            vis[node] = 1;
-            sum += wt;
-            
-            for(int[] it : adj.get(node)){
-                int u = it[0];  
-                int w = it[1];
-                    
-                if(vis[u] == 0){
-                    pq.add(new Data(w,u));
-                }
+        for(int i = 0; i< V; i++){
+            for(int[] it: adj.get(i)){
+                int adjNode = it[0];
+                int wt = it[1];
+                int node = i;
+                
+                edges.add(new Data(wt, node, adjNode));
             }
-            
         }
-    
-        return sum;
+        
+        Collections.sort(edges);
+        DisjointSet ds = new DisjointSet(V);
+        
+        int mstWt = 0;
+        
+        for(Data it : edges){
+            int wt = it.weight;
+            int u = it.u;
+            int v = it.v;
+            
+            
+            // if not same cmp add weight and join them by union
+            if(ds.find(u) != ds.find(v)){
+                mstWt += wt;
+                ds.union(u, v);
+            }
+        }
+        
+        
+        return mstWt;
     }
 }
