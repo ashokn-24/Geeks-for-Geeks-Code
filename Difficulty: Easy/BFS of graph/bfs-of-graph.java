@@ -48,22 +48,21 @@ class Solution {
     // Function to return Breadth First Traversal of given graph.
     public ArrayList<Integer> bfsOfGraph(int v, ArrayList<ArrayList<Integer>> adj) {
         int[] vis = new int[v];
-        ArrayList<Integer> res = new ArrayList<>();
         Queue<Integer> q = new LinkedList<>();
+        ArrayList<Integer> res = new ArrayList<>();
         vis[0] = 1;
-        q.offer(0);
+        q.add(0);
         
         while(!q.isEmpty()){
-            int node = q.poll();
-            res.add(node);
-            
-            for(Integer it: adj.get(node)){
-                if(vis[it] == 0){
-                    vis[it] = 1;
-                    q.add(it);
-                }
-            }
-            
+           int node = q.poll();
+           res.add(node);
+           
+           for(int it : adj.get(node)){
+               if(vis[it] == 0){
+                   vis[it] = 1;
+                   q.add(it);
+               }
+           }
         }
         
         return res;
